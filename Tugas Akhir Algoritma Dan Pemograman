@@ -1,0 +1,194 @@
+#include <stdio.h>
+#include <stdlib.h> // Include stdlib.h for system() function
+
+#define MAX_PIN_LENGTH 6
+
+typedef struct {
+    int pin;
+    float balance;
+} Account;
+
+void login(Account *account);
+void checkBalance(Account account);
+void withdrawCash(Account *account);
+void depositCash(Account *account);
+void transferFunds(Account *sender, Account *receiver);
+void topUpMobileCredit(Account *account);
+void topUpEwallet(Account *account);
+void clearScreen(); // Declare the function
+
+int main() {
+    Account user = {102204, 1000.0};
+    Account recipient = {12023, 500.0};
+    int choice;
+
+    login(&user);
+
+    do {
+        clearScreen(); // Clear the screen before displaying the menu
+        printf("\n========= SELAMAT DATANG DI ATM WANDA =========\n");
+        printf("1. Cek Saldo\n");
+        printf("2. Tarik Tunai\n");
+        printf("3. Setor Tunai\n");
+        printf("4. Transfer Dana\n");
+        printf("5. Isi Pulsa\n");
+        printf("6. Top Up E-Wallet\n");
+        printf("7. Keluar\n");
+        printf("==============================\n");
+        printf("Masukkan pilihan (1-7): ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                checkBalance(user);
+                break;
+            case 2:
+                withdrawCash(&user);
+                break;
+            case 3:
+                depositCash(&user);
+                break;
+            case 4:
+                transferFunds(&user, &recipient);
+                break;
+            case 5:
+                topUpMobileCredit(&user);
+                break;
+            case 6:
+                topUpEwallet(&user);
+                break;
+            case 7:
+                printf("Terima kasih telah menggunakan layanan kami.\n");
+                break;
+            default:
+                printf("Pilihan tidak valid. Silakan pilih kembali.\n");
+        }
+    } while (choice != 7);
+
+    return 0;
+}
+
+void login(Account *account) {
+    int pin;
+    printf("Masukkan PIN Anda: ");
+    scanf("%d", &pin);
+
+    if (pin == account->pin) {
+        printf("Login berhasil. Selamat datang!\n");
+    } else {
+        printf("PIN salah. Silakan coba lagi.\n");
+        login(account);
+    }
+}
+
+void checkBalance(Account account) {
+    printf("Saldo Anda saat ini: %.2f\n", account.balance);
+}
+
+void withdrawCash(Account *account) {
+    float amount;
+    printf("Masukkan jumlah uang yang ingin ditarik: ");
+    scanf("%f", &amount);
+
+    if (amount > 0 && amount <= account->balance) {
+        account->balance -= amount;
+        printf("Penarikan berhasil. Saldo Anda saat ini: %.2f\n", account->balance);
+    } else {
+        printf("Penarikan gagal. Saldo tidak mencukupi atau jumlah tidak valid.\n");
+    }
+}
+
+void depositCash(Account *account) {
+    float amount;
+    printf("Masukkan jumlah uang yang ingin disetor: ");
+    scanf("%f", &amount);
+
+    if (amount > 0) {
+        account->balance += amount;
+        printf("Setoran berhasil. Saldo Anda saat ini: %.2f\n", account->balance);
+    } else {
+        printf("Setoran gagal. Jumlah tidak valid.\n");
+    }
+}
+
+void transferFunds(Account *sender, Account *receiver) {
+    float amount;
+    printf("Masukkan jumlah uang yang ingin ditransfer: ");
+    scanf("%f", &amount);
+
+    if (amount > 0 && amount <= sender->balance) {
+        sender->balance -= amount;
+        receiver->balance += amount;
+        printf("Transfer berhasil. Saldo Anda saat ini: %.2f\n", sender->balance);
+    } else {
+        printf("Transfer gagal. Saldo tidak mencukupi atau jumlah tidak valid.\n");
+    }
+}
+
+void topUpMobileCredit(Account *account) {
+    float amount;
+    printf("Masukkan jumlah pulsa yang ingin diisi: ");
+    scanf("%f", &amount);
+
+    if (amount > 0 && amount <= account->balance) {
+        account->balance -= amount;
+        printf("Isi pulsa berhasil. Saldo Anda saat ini: %.2f\n", account->balance);
+    } else {
+        printf("Isi pulsa gagal. Saldo tidak mencukupi atau jumlah tidak valid.\n");
+    }
+}
+
+void topUpEwallet(Account *account) {
+    int choice;
+    float amount;
+    char phoneNumber[15]; // Assuming maximum length of phone number is 15 digits
+    printf("Pilih layanan top up E-Wallet:\n");
+    printf("1. Dana\n");
+    printf("2. Gopay\n");
+    printf("3. Ovo\n");
+    printf("4. LinkAja\n");
+    printf("5. ShopeePay\n");
+    printf("Masukkan pilihan (1-5): ");
+    scanf("%d", &choice);
+
+    printf("Masukkan nomor telepon: ");
+    scanf("%s", phoneNumber);
+
+    printf("Masukkan jumlah yang ingin di-top up: ");
+    scanf("%f", &amount);
+
+    if (amount > 0 && amount <= account->balance) {
+        switch (choice) {
+            case 1:
+                printf("Top up Dana untuk nomor %s berhasil. Saldo Anda saat ini: %.2f\n", phoneNumber, account->balance - amount);
+                break;
+            case 2:
+                printf("Top up Gopay untuk nomor %s berhasil. Saldo Anda saat ini: %.2f\n", phoneNumber, account->balance - amount);
+                break;
+            case 3:
+                printf("Top up Ovo untuk nomor %s berhasil. Saldo Anda saat ini: %.2f\n", phoneNumber, account->balance - amount);
+                break;
+            case 4:
+                printf("Top up LinkAja untuk nomor %s berhasil. Saldo Anda saat ini: %.2f\n", phoneNumber, account->balance - amount);
+                break;
+            case 5:
+                printf("Top up ShopeePay untuk nomor %s berhasil. Saldo Anda saat ini: %.2f\n", phoneNumber, account->balance - amount);
+                break;
+            default:
+                printf("Pilihan tidak valid.\n");
+                break;
+        }
+    } else {
+        printf("Top up gagal. Saldo tidak mencukupi atau jumlah tidak valid.\n");
+    }
+}
+
+void clearScreen() {
+    // Clear screen using system-specific commands
+    #ifdef _WIN32
+        system("cls");
+    #else
+        // Assuming UNIX-like system
+        system("clear");
+    #endif
+}

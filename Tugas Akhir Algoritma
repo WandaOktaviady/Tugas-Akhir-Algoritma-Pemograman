@@ -1,0 +1,6 @@
+#include<stdiu.h>
+int main(){
+    printf("panduan Tugas Akhir Algoritma dan Pemograman");
+}
+// Nama : Wanda Oktaviady
+// NIM  : 12250512023
